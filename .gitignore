@@ -13,3 +13,5 @@ node_modules/
 
 # Custom Ignored Files
 data/client_secret.json
+
+.DS_Store
