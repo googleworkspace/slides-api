@@ -12,6 +12,6 @@ node_modules/
 .env
 
 # Custom Ignored Files
-data/client_secret.json
+data/secrets/
 
 .DS_Store
