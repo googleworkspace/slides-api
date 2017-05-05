@@ -13,6 +13,7 @@ const bigquery = require('@google-cloud/bigquery')({
   projectId: project_id
 });
 
+// See codelab for other queries.
 const query = `
   SELECT
     license,
