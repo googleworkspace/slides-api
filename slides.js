@@ -20,7 +20,7 @@ const TOKEN_PATH = TOKEN_DIR + 'slides.googleapis.com-nodejs-quickstart.json';
  */
 module.exports.getClientSecrets = () => {
   return new Promise((resolve, reject) => {
-    fs.readFile('data/client_secret.json', (err, content) => {
+    fs.readFile('data/secrets/client_secret.json', (err, content) => {
       if (err) {
         reject('Error loading client secret file: ' + err);
         return;
