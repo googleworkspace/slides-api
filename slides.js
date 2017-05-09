@@ -2,13 +2,20 @@ const fs = require('fs');
 const readline = require('readline');
 const google = require('googleapis');
 const slides = google.slides('v1');
+const drive = google.drive('v3');
 const googleAuth = require('google-auth-library');
 const openurl = require('openurl');
 const commaNumber = require('comma-number')
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/slides.googleapis.com-nodejs-quickstart.json
-const SCOPES = ['https://www.googleapis.com/auth/presentations'];
+const SCOPES = [
+  'https://www.googleapis.com/auth/presentations', // needed to create slides
+  'https://www.googleapis.com/auth/drive.metadata', // needed to copy files
+  'https://www.googleapis.com/auth/drive.file', // needed to create files
+  'https://www.googleapis.com/auth/bigquery.readonly' // needed for bigquery
+];
+
 const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
       process.env.USERPROFILE) + '/.credentials/';
 const TOKEN_PATH = TOKEN_DIR + 'slides.googleapis.com-nodejs-quickstart.json';
@@ -123,16 +130,15 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
   var auth = authAndGHData[0];
   var ghData = authAndGHData[1];
 
-  // https://developers.google.com/slides/reference/rest/v1/presentations/create
-  slides.presentations.create({
+  // First copy the template slide from drive.
+  drive.files.copy({
     auth: auth,
-    title: "Open Source Licenses Analysis",
-  }, (err, presentation) => {
-    if (err) {
-      console.log('The API returned an error: ' + err);
-      return;
+    fileId: '1toV2zL0PrXJOfFJU-NYDKbPx9W0C4I-I8iT85TS0fik',
+    resource: {
+      name: 'Open Source Licenses Analysis'
     }
-
+  }, (err, presentation) => {
+    // Then update the slides.
     const ID_TITLE_SLIDE = 'id_title_slide';
     const ID_TITLE_SLIDE_TITLE = 'id_title_slide_title';
     const ID_TITLE_SLIDE_BODY = 'id_title_slide_body';
@@ -174,6 +180,16 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
           text: licenseData.license
         }
       }, {
+        updateParagraphStyle: {
+          objectId: `${ID_TITLE_SLIDE_BODY}_${index}`,
+          fields: '*',
+          style: {
+            lineSpacing: 10,
+            spaceAbove: {magnitude: 0, unit: 'PT'},
+            spaceBelow: {magnitude: 0, unit: 'PT'},
+          }
+        }
+      }, {
         updateTextStyle: {
           objectId: `${ID_TITLE_SLIDE_BODY}_${index}`,
           style: {
@@ -191,13 +207,21 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
 
     const allSlides = ghData.map(
         (data, index) => createSlideJSON(data, index));
-    slideRequests = [].concat.apply([], allSlides); // flatten the slide requests
+    slideRequests = [{
+      replaceAllTextRequest: {
+        replaceText: 'hello',
+        containsText: {
+          text: '{title}',
+          matchCase: false
+        }
+      }
+    }].concat.apply([], allSlides); // flatten the slide requests
 
 
     // Execute the requests
     slides.presentations.batchUpdate({
       auth: auth,
-      presentationId: presentation.presentationId,
+      presentationId: presentation.id,
       resource: {
         requests: slideRequests
       }
@@ -208,11 +232,20 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
 });
 
 /**
- * Opens a presentation in a browser.
- * @param  {presentation} presentation The presentation.
+ * Returns the presentation URL from a presentation ID.
+ * @param  {String} presentationId The presentation ID.
+ * @return {String} The presentation URL.
  */
-module.exports.openSlides = (presentation) => {
-  const url = `https://docs.google.com/presentation/d/${presentation.presentationId}`;
+function getPresentationURL(presentationId) {
+  return `https://docs.google.com/presentation/d/${presentationId}`;
+}
+
+/**
+ * Opens a presentation in a browser.
+ * @param  {String} presentation The presentation object.
+ */
+module.exports.openSlidesInBrowser = (presentation) => {
+  const url = getPresentationURL(presentation.id);
   console.log('Presentation URL:', url);
   openurl.open(url);
-};
+}

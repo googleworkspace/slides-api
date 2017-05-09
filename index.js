@@ -8,7 +8,7 @@ slides.getClientSecrets()
     slides.authorize(credentials), bigquery.getLicenseData()
   ]))
   .then(slides.createSlides)
-  .then(slides.openSlides)
+  .then(slides.openSlidesInBrowser)
   .then(() => {
     console.log('-- Finished generating slides. --');
   });

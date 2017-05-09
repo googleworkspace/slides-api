@@ -45,13 +45,12 @@ module.exports.getLicenseData = () => new Promise((resolve, reject) => {
  * @param  {String} licenseName The license name
  */
 function getLicenseText(licenseName, githubData) {
-  console.log(licenseName);
   return new Promise((resolve, reject) => {
     read(`./data/license/${licenseName}.txt`, 'utf8', (err, buffer) => {
       resolve({
         licenseName,
         count: githubData.filter(datum => datum.license === licenseName)[0].count,
-        license: buffer
+        license: buffer.substring(0, 1200) // first 1200 characters
       });
     });
   });
