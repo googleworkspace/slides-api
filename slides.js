@@ -208,12 +208,9 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
     const allSlides = ghData.map(
         (data, index) => createSlideJSON(data, index));
     slideRequests = [{
-      replaceAllTextRequest: {
+      replaceAllText: {
         replaceText: 'hello',
-        containsText: {
-          text: '{title}',
-          matchCase: false
-        }
+        containsText: { text: '{title}' }
       }
     }].concat.apply([], allSlides); // flatten the slide requests
 
