@@ -18,7 +18,6 @@ const SCOPES = [
 const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
       process.env.USERPROFILE) + '/.credentials/';
 const TOKEN_PATH = TOKEN_DIR + 'slides.googleapis.com-nodejs-quickstart.json';
-
 const SLIDE_TITLE_TEXT = 'Open Source Licenses Analysis';
 
 /**
