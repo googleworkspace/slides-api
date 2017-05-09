@@ -1,0 +1,24 @@
+{
+  "name": "slides-api-codelab",
+  "description": "In this codelab, you’ll learn how you can use Google Slides as a custom presentation tool for an analysis of the most common software licenses.",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Grant Timmerman",
+    "email": "timmerman+devrel@googlers.com"
+  },
+  "repository": "https://github.com/googlecodelabs/slides-api",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^0.9.3",
+    "comma-number": "^2.0.0",
+    "dotenv": "^4.0.0",
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^19.0.0",
+    "license-generator": "0.0.13",
+    "openurl": "^1.1.1",
+    "read-file": "^0.2.0"
+  }
+}
