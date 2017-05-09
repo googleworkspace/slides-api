@@ -20,6 +20,8 @@ const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
       process.env.USERPROFILE) + '/.credentials/';
 const TOKEN_PATH = TOKEN_DIR + 'slides.googleapis.com-nodejs-quickstart.json';
 
+const SLIDE_TITLE_TEXT = 'Open Source Licenses Analysis';
+
 /**
  * Loads client secrets from a local file.
  *
@@ -135,7 +137,7 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
     auth: auth,
     fileId: '1toV2zL0PrXJOfFJU-NYDKbPx9W0C4I-I8iT85TS0fik',
     resource: {
-      name: 'Open Source Licenses Analysis'
+      name: SLIDE_TITLE_TEXT
     }
   }, (err, presentation) => {
     // Then update the slides.
@@ -172,7 +174,7 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
       }, {
         insertText: {
           objectId: `${ID_TITLE_SLIDE_TITLE}_${index}`,
-          text: `${licenseData.licenseName}  -  ${commaNumber(licenseData.count)} repos`
+          text: `#${index + 1} ${licenseData.licenseName}  —  ${commaNumber(licenseData.count)} repos`
         }
       }, {
         insertText: {
@@ -207,12 +209,13 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
 
     const allSlides = ghData.map(
         (data, index) => createSlideJSON(data, index));
-    slideRequests = [{
+    slideRequests = [].concat.apply([], allSlides); // flatten the slide requests
+    slideRequests.push({
       replaceAllText: {
-        replaceText: 'hello',
-        containsText: { text: '{title}' }
+        replaceText: SLIDE_TITLE_TEXT,
+        containsText: { text: '{{TITLE}}' }
       }
-    }].concat.apply([], allSlides); // flatten the slide requests
+    })
 
 
     // Execute the requests
