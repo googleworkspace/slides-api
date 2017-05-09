@@ -45,11 +45,18 @@ module.exports.getLicenseData = () => new Promise((resolve, reject) => {
  * @param  {String} licenseName The license name
  */
 function getLicenseText(licenseName, githubData) {
+  // var totalNumberOfLicenses = githubData.map()
+  var totalLicenses = githubData
+        .map(license => license.count)
+        .reduce((a, b) => a + b);
+
   return new Promise((resolve, reject) => {
     read(`./data/license/${licenseName}.txt`, 'utf8', (err, buffer) => {
+      var count = githubData.filter(datum => datum.license === licenseName)[0].count;
       resolve({
         licenseName,
-        count: githubData.filter(datum => datum.license === licenseName)[0].count,
+        count,
+        percent: Math.round(count / totalLicenses * 100),
         license: buffer.substring(0, 1200) // first 1200 characters
       });
     });

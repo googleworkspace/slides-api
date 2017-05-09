@@ -11,8 +11,7 @@ const commaNumber = require('comma-number')
 // at ~/.credentials/slides.googleapis.com-nodejs-quickstart.json
 const SCOPES = [
   'https://www.googleapis.com/auth/presentations', // needed to create slides
-  'https://www.googleapis.com/auth/drive.metadata', // needed to copy files
-  'https://www.googleapis.com/auth/drive.file', // needed to create files
+  'https://www.googleapis.com/auth/drive', // read and write files
   'https://www.googleapis.com/auth/bigquery.readonly' // needed for bigquery
 ];
 
@@ -174,7 +173,7 @@ module.exports.createSlides = (authAndGHData) => new Promise((resolve, reject) =
       }, {
         insertText: {
           objectId: `${ID_TITLE_SLIDE_TITLE}_${index}`,
-          text: `#${index + 1} ${licenseData.licenseName}  —  ${commaNumber(licenseData.count)} repos`
+          text: `#${index + 1} ${licenseData.licenseName}  — ~${licenseData.percent}% (${commaNumber(licenseData.count)} repos)`
         }
       }, {
         insertText: {
