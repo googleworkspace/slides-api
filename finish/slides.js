@@ -76,7 +76,7 @@ function createSlideJSON(licenseData, index) {
       objectId: `${ID_TITLE_SLIDE_BODY}_${index}`,
       fields: '*',
       style: {
-        lineSpacing: 10,
+        lineSpacing: 100.0,
         spaceAbove: {magnitude: 0, unit: 'PT'},
         spaceBelow: {magnitude: 0, unit: 'PT'},
       }
